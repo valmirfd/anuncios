@@ -69,6 +69,7 @@ class OrganizerController extends BaseController
         }
 
         return redirect()->to($link);
+                
     }
 
     public function panel(): RedirectResponse
