@@ -5,7 +5,9 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Entities\Event;
 use App\Models\EventModel;
+use App\Services\Event\EventLayoutService;
 use App\Services\Event\EventStoreService;
+use App\Services\Event\SeatRenderService;
 use App\Validation\EventValidation;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -45,11 +47,14 @@ class EventsController extends BaseController
     {
         $event = $this->model->whereUser()->getByCode(code: $code);
 
+        $layoutDays = (new EventLayoutService)->build($event->id);
+        $debug = (new SeatRenderService)->render(layoutDays: $layoutDays);
 
 
         $data = [
             'title' => 'Detalhes do evento',
-            'event' => $event
+            'event' => $event,
+            'debug' => $debug
         ];
 
         return view('Dashboard/Events/show', $data);

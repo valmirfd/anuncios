@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Event;
 
 use App\Entities\Sector;
+use CodeIgniter\I18n\Time;
 
 class SeatRenderService
 {
@@ -18,8 +19,42 @@ class SeatRenderService
 
     public function render(array $layoutDays): string
     {
+        $html = '';
 
-        return '';
+        //Abertura do accordion para os dias de apresentação
+        $html .= <<<ACCORDION
+         <div class="accordion accordion-flush" id="event-days">          
+        ACCORDION;
+
+        foreach ($layoutDays as $day) {
+            //Dia da apresentação
+            $eventDateFormatted = Time::parse($day->event_date)->format('d/m/Y H:i');
+
+            $html .= <<<ACCORDION
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#flush-collapseOne-{$day->id}" 
+                    aria-expanded="false" 
+                    aria-controls="flush-collapseOne-{$day->id}">
+                        Apresentação {$eventDateFormatted}
+                    </button>
+                    </h2>
+                    <div id="flush-collapseOne-{$day->id}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">                        
+                        {$this->renderSections(sectors: $day->sectors, eventDayId: (int) $day->id)}                        
+                        </div>
+                    </div>
+                </div>
+            ACCORDION;
+        }
+
+        $html .= <<<ACCORDION
+         </div>          
+        ACCORDION;
+
+        return $html;
     }
 
 
