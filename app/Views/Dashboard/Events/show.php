@@ -70,6 +70,8 @@
 
                     <?php echo $debug; ?>
 
+                    
+
                    
                 </div>
 

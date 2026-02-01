@@ -106,6 +106,7 @@ class EventLayoutService
             $day->sectors = $sectors;
         }
 
+        //Retorna os dias do evento com seus setores, filas e assentos.
         return $eventDays;
     }
 }

@@ -61,16 +61,50 @@ class SeatRenderService
 
     private function renderSections(array $sectors, int $eventDayId): string
     {
+        $html = '';
 
-        return '';
+        //Abertura do accordion para os sectors
+        $html .= <<<ACCORDION
+         <div class="accordion accordion-flush" id="sectors">          
+        ACCORDION;
+
+        foreach ($sectors as $sector) {
+
+            //Obtemos os totais dos assentos para o setor atual
+            $totals = $this->calculateSeatsTotal($sector);
+
+            $seatsHTML = $this->renderSeatsForSector(sector: $sector, eventDayId: $eventDayId);
+
+            $html .= <<<ACCORDION
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#flush-collapseOne-{$eventDayId}-{$sector->id}" 
+                                aria-expanded="false" 
+                                aria-controls="flush-collapseOne-{$eventDayId}-{$sector->id}">
+                                Setor {$sector->name}
+                            </button>
+                        </h2>
+                        <div id="flush-collapseOne-{$eventDayId}-{$sector->id}" class="accordion-collapse collapse" data-bs-parent="#sectors">
+                            <div class="accordion-body">                        
+                                <strong>Preço integral:</strong> {$sector->ticketPrice()}                  
+                                <strong>Preço meia entrada:</strong> {$sector->discountedPrice()}                  
+                            </div>
+                        </div>
+                    </div>
+                ACCORDION;
+        }
+
+        $html .= <<<ACCORDION
+         </div>          
+        ACCORDION;
+
+        return $html;
     }
 
-    public function renderSeatsForSector(
-        array $rows,
-        int $sectorId,
-        string $sectorName,
-        int $eventDayId
-    ): string {
+    public function renderSeatsForSector(Sector $sector, int $eventDayId): string
+    {
 
         return '';
     }
