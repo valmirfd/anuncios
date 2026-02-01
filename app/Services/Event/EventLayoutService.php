@@ -22,6 +22,7 @@ class EventLayoutService
             ->get()
             ->getResult();
 
+
         if (empty($eventDays)) {
             throw new Exception("O evento ID: {$eventId} não tem dias de apresentação");
         }
@@ -55,6 +56,7 @@ class EventLayoutService
         //criamos um array temporário para armazenar os bookings Agrupados por assento e dia do evento
         $tempBookings = [];
 
+        //Percorremos as reservas associadas aos dias do evento
         foreach ($bookingsDays as $booking) {
 
             $seatId = (int) $booking->seat_id;
@@ -66,6 +68,44 @@ class EventLayoutService
         //para cada assento, clonamos e adicionamos os bookings correspondentes ao dia do evento
         $seatsWithBookings = [];
 
-        return [];
+        //Agora percorremos os assentos
+        foreach ($seats as $seat) {
+            $seatCopy = clone $seat;
+            $auxBookings = [];
+
+            //Percorremos os dias do evento
+            foreach ($eventDays as $eventDay) {
+                $eventDayId = (int) $eventDay->id;
+
+                $auxBookings[$eventDayId] = $tempBookings[$seat->id][$eventDayId] ?? [];
+            }
+
+            //Agora atribuo ao seatCopy as reservas correspondentes
+            $seatCopy->bookings = $auxBookings;
+
+            //Agora adicionamos o assento clonado ao array de assentos com reservas
+            $seatsWithBookings[] = $seatCopy;
+        }
+
+        //Agora para cada fila associamos os assentos que a essa altura já estão com os dados de reservas definidos
+        foreach ($rows as $row) {
+            $row->seats = array_filter($seatsWithBookings, function ($seat) use ($row) {
+                return (int) $seat->row_id === (int) $row->id;
+            });
+        }
+
+        //Agora para cada setor associamos oa filas que a essa altura já estão com os dados de assentos definidos
+        foreach ($sectors as $sector) {
+            $sector->rows = array_filter($rows, function ($row) use ($sector) {
+                return (int) $row->sector_id === (int) $sector->id;
+            });
+        }
+
+        //Para cada dia do evento, associamos os setores que já estão com as filas e assentos
+        foreach ($eventDays as $day) {
+            $day->sectors = $sectors;
+        }
+
+        return $eventDays;
     }
 }

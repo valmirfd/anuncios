@@ -31,23 +31,23 @@ class SeatRenderService
             $eventDateFormatted = Time::parse($day->event_date)->format('d/m/Y H:i');
 
             $html .= <<<ACCORDION
-                <div class="accordion-item mb-2">
-                    <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" 
-                    data-bs-toggle="collapse" 
-                    data-bs-target="#flush-collapseOne-{$day->id}" 
-                    aria-expanded="false" 
-                    aria-controls="flush-collapseOne-{$day->id}">
-                        Apresentação {$eventDateFormatted}
-                    </button>
-                    </h2>
-                    <div id="flush-collapseOne-{$day->id}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">                        
-                        {$this->renderSections(sectors: $day->sectors, eventDayId: (int) $day->id)}                        
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#flush-collapseOne-{$day->id}" 
+                                aria-expanded="false" 
+                                aria-controls="flush-collapseOne-{$day->id}">
+                                Apresentação {$eventDateFormatted}
+                            </button>
+                        </h2>
+                        <div id="flush-collapseOne-{$day->id}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">                        
+                                {$this->renderSections(sectors:$day->sectors, eventDayId: (int)$day->id)}                        
+                            </div>
                         </div>
                     </div>
-                </div>
-            ACCORDION;
+                ACCORDION;
         }
 
         $html .= <<<ACCORDION

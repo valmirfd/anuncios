@@ -48,8 +48,10 @@ class EventsController extends BaseController
         $event = $this->model->whereUser()->getByCode(code: $code);
 
         $layoutDays = (new EventLayoutService)->build($event->id);
-        $debug = (new SeatRenderService)->render(layoutDays: $layoutDays);
 
+       
+
+        $debug = (new SeatRenderService)->render(layoutDays: $layoutDays);
 
         $data = [
             'title' => 'Detalhes do evento',
