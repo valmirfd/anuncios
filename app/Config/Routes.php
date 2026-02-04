@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\Api\ApiEventLayoutController;
 use App\Controllers\DashboardController;
 use App\Controllers\EventsController;
 use App\Controllers\HomeController;
@@ -29,5 +30,12 @@ $routes->group('dashboard', static function ($routes) {
         $routes->get('panel', [OrganizerController::class, 'panel'], ['as' => 'dashboard.organizer.panel']);
         $routes->post('create', [OrganizerController::class, 'create'], ['as' => 'dashboard.organizer.create.account']);
         $routes->put('check', [OrganizerController::class, 'check'], ['as' => 'dashboard.organizer.check.account']);
+    });
+});
+
+$routes->group('api', static function ($routes) {
+
+    $routes->group('events', static function ($routes) {
+        $routes->get('layout/(:segment)', [ApiEventLayoutController::class, 'layout/$1'], ['as' => 'api.events.layout']);
     });
 });

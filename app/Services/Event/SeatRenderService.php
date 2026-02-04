@@ -151,15 +151,40 @@ class SeatRenderService
 
                 /** @var SeatBooking $booking */
                 foreach ($dayBookings as $booking) {
+
+                    //Está vendido ou pendente?
                     if ($booking->isSold() || $booking->isPending()) {
                         $btnClass = 'btn-danger';
                         $title = $booking->status();
                         $seatCodeAttibute = ''; //remove o atributo - data-seat
                         break;
                     }
-                }
-            }
 
+                    //Está reservado?
+                    if ($booking->isReserved()) {
+                        //Classe para assento reservado com ' ' espaço no final
+                        //Adiciona uma classe extra se o acento for reservado pelo usuário logado
+                        $btnClass = 'btn-warning text-dark ';
+                        $btnClass .= $this->loggedUserId === (int) $booking->user_id ? 'btn-seat seat-session-reserved' : '';
+                        $title = $this->loggedUserId === (int) $booking->user_id ? "Esse assento ficará reservado pra você até: {$booking->expire_at}" : $booking->status();
+
+                        break;
+                    }
+                }
+
+                //Formata o nome do assento com as iniciais do setor, nome da fileira e número do acento
+                $seatLabel = "{$sectorInitials}<br>{$row->name}<br>A-{$seat->number}";
+
+                $rowHTML .= <<<TABLE
+                    <td>
+                        <div title="{$title}" {$seatCodeAttibute} class="{$btnClass} btn btn-sm badge">
+                         
+                        
+                            {$seatLabel}
+                        </div>
+                    </td>
+                TABLE;
+            }
 
             //Fechamento do TABLE
             $seatsHTML .= <<<TABLE

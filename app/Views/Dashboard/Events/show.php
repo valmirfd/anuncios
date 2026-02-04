@@ -67,12 +67,9 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+                    <div id="structureContainer">
 
-                    <?php echo $debug; ?>
-
-                    
-
-                   
+                    </div>
                 </div>
 
             </div>
@@ -87,7 +84,39 @@
 
 <?php echo $this->section('js'); ?>
 
+<script>
+    const getEventLayout = async () => {
 
+        try {
+            const apiUrl = '<?= route_to('api.events.layout', $event->code); ?> ?>';
+
+            const response = await fetch(apiUrl);
+
+            if (!response.ok) {
+                throw new Error(`Erro: ${response.status} - ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            document.getElementById('structureContainer').innerHTML = data.structure;
+        } catch (error) {
+            console.log(`Erro ao buscar os dados: ${error.message}`);
+            Toastify({
+                text: "Correu um erro ao buscar o layout do evento",
+                duration: 10000,
+                close: true,
+                gravity: "bottom",
+                position: "left",
+                backGroundColor: '#dc3454'
+            }).showToast();
+        }
+
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getEventLayout();
+    });
+</script>
 
 
 <?php echo $this->endSection(); ?>
