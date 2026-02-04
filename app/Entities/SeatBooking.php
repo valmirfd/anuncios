@@ -25,4 +25,19 @@ class SeatBooking extends Entity
     {
         return StatusSeatBooking::tryFrom($this->status)?->label() ?? $this->status;
     }
+
+    public function isReserved(): bool
+    {
+        return $this->status === StatusSeatBooking::Reserved->value;
+    }
+
+    public function isSold(): bool
+    {
+        return $this->status === StatusSeatBooking::Sold->value;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === StatusSeatBooking::Pending->value;
+    }
 }
